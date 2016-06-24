@@ -7,63 +7,92 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Exercicio01
+namespace Banco
 {
     public partial class Form1 : Form
     {
-        Conta contaVictor = new Conta(); 
-        
+        private Conta contaCorrente;
+        private ContaPoupanca contaPoupanca;
+
         public Form1()
         {
             InitializeComponent();
-
-            contaVictor.titular = "Victor Navowsky";
-            contaVictor.numero = 001;
-            contaVictor.saldo = 100.0;
-
-            AtualizarDados();
-
-            Conta mauricio = new Conta();
-            mauricio.saldo = 2000.0;
-            mauricio.titular = "Zé";
-
-            Conta copia = mauricio;
-            copia.saldo = 3000.0;
-
-            MessageBox.Show("mauricio = " + mauricio.saldo);
-            MessageBox.Show("copia = " + copia.saldo);
         }
 
-        private void btnDeposito_Click(object sender, EventArgs e)
+        private void Form1_Load(object sender, EventArgs e)
         {
-            if (txtDeposito.Text != "")
-                contaVictor.Depositar(Convert.ToDouble(txtDeposito.Text));
-            else
-                MessageBox.Show("Informe o valor que deseja depositar");
+            // Instancia uma nova Conta Corrente
+            this.contaCorrente = new Conta();
+            contaCorrente.Numero = 1;
+
+            Cliente cliente = new Cliente("Jão");
+            contaCorrente.Titular = cliente;
+
+            txtTitular.Text = contaCorrente.Titular.Nome;
+            txtNumero.Text = Convert.ToString(contaCorrente.Numero);
+            txtSaldo.Text = Convert.ToString(contaCorrente.Saldo);
+
+            // Instancia uma nova Conta Poupança
+            this.contaPoupanca = new ContaPoupanca();
+            contaPoupanca.Numero = 1;
+
+            Cliente clientePop = new Cliente("Maria");
+            contaPoupanca.Titular = clientePop;
+
+            txtTitular.Text = contaPoupanca.Titular.Nome;
+            txtNumero.Text = Convert.ToString(contaPoupanca.Numero);
+            txtSaldo.Text = Convert.ToString(contaPoupanca.Saldo);
+        }
+
+        private void btnDepositar_Click(object sender, EventArgs e)
+        {
+            if (rdbCorrente.Checked == true)
+            {
+                contaCorrente.Depositar(Convert.ToDouble(txtValor.Text));  // converte para string             
+                txtSaldo.Text = contaCorrente.Saldo.ToString(); // outra forma de converter para string
+                MessageBox.Show("Operação realizada com sucesso");
+            }
+
+            if (rdbPoupanca.Checked == true)
+            {
+                // chama o método escrito na classe pai "Conta"
+                contaPoupanca.Depositar(Convert.ToDouble(txtValor.Text));  // converte para string             
+                txtSaldo.Text = contaPoupanca.Saldo.ToString(); // outra forma de converter para string
+                MessageBox.Show("Operação realizada com sucesso");
+            }
+
+            if (rdbPoupanca.Checked == false && rdbCorrente.Checked == false)
+                MessageBox.Show("Selecione o tipo da conta");
+        }
+
+        private void btnSacar_Click(object sender, EventArgs e)
+        {
+            if (rdbPoupanca.Checked == true)
+            {
+                // chama o método "Sacar" escrito na classe filha "ContaPoupanca"
+                contaPoupanca.Sacar(Convert.ToDouble(txtValor.Text));
+
+                if (contaPoupanca.resultado)
+                txtSaldo.Text = contaPoupanca.Saldo.ToString();
+            }
+
+            if (rdbCorrente.Checked == true)
+            {
+                contaCorrente.Sacar(Convert.ToDouble(txtValor.Text));
+                
+                if(contaCorrente.resultado)
+                txtSaldo.Text = contaCorrente.Saldo.ToString();
+            }
             
-            AtualizarDados();
+            if (rdbPoupanca.Checked == false && rdbCorrente.Checked == false)
+                MessageBox.Show("Selecione o tipo da conta");
         }
-
-        private void btnSaque_Click(object sender, EventArgs e)
-        {
-            if (txtSaque.Text != "") 
-                contaVictor.Sacar(Convert.ToDouble(txtSaque.Text));
-            else
-                MessageBox.Show("Informe o valor que deseja sacar");
-
-            AtualizarDados();
-        }
-
-        private void AtualizarDados()
-        {
-            txtDeposito.Clear();
-            txtSaque.Clear();
-            lbxDados.Items.Clear();
-
-            // preenche o listBox com os valores dos atributos
-            lbxDados.Items.Add("Número da conta: " + contaVictor.numero);
-            lbxDados.Items.Add("Nome do cliente: " + contaVictor.titular);
-            lbxDados.Items.Add("Saldo: " + contaVictor.saldo);
-        }        
     }
 }
+
+// Messagem de erro: Object reference not set to an instance of an object.
+// Referência de objeto não definida > para uma instância de um objeto.
+      // ClasseQualquer variavelQualquer = new ClasseQualquer();
+
+// Siginifica que: a variável/objeto "variavelQualquer" ainda não foi criada como uma instância da classe "ClasseQualquer".
+// O objeto ainda não existe.

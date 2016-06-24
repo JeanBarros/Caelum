@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Exercicio01
+namespace Banco
 {
-    class Cliente
+    public class Cliente
     {
-        public string nome;
-        public string cpf;
-        public string rg;
-        public string endereco;
+        public Cliente(string nomeCliente)
+        {
+            this.Nome = nomeCliente;
+        }
+
+        public string Nome { get; set; }
     }
 }

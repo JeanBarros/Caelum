@@ -4,36 +4,36 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Exercicio01
+namespace Banco
 {
-    class Conta
+    public class Conta
     {
-        public double saldo;
-        public string titular;
-        public int numero;
+        public int Numero { get; set; }
+        public double Saldo { get; protected set; }
 
-        /// <summary>
-        /// Deposita o valor informado no parâmetro no objeto "conta" que executa o método.
-        /// </summary>
-        /// <param name="valor"></param>
-        public void Depositar(double valor)
+        public Cliente Titular { get; set; }
+
+        public void Depositar(double valorOperacao)
         {
-            this.saldo += valor;
+            this.Saldo += valorOperacao;    
         }
 
-        /// <summary>
-        /// Saca o valor informado no parâmetro no objeto "conta" que executa o método.
-        /// </summary>
-        /// <param name="valor"></param>
-        public void Sacar(double valorSaque)
+        // Esta variável é utilizada como valor de retorno em métodos de classes filhas.
+        public bool resultado = false;
+
+        public virtual bool Sacar(double valorOperacao)
         {
-            if (this.saldo > 0 && this.saldo >= valorSaque)
+            if (this.Saldo > 0 && this.Saldo >= valorOperacao)
             {
-                this.saldo -= valorSaque;
-                MessageBox.Show("Saque no valor de R$ " + valorSaque + " realizado com sucesso.");
+                this.Saldo -= valorOperacao;
+                MessageBox.Show("Saque no valor de R$ " + valorOperacao + " realizado com sucesso.");
+
+                resultado = true;
             }
             else
                 MessageBox.Show("Saldo insuficiente");
+
+            return resultado;
         }
     }
 }
