@@ -11,13 +11,10 @@ namespace Banco
     {
         const double taxtaSaquePoupanca = 0.10;
         
-        public override bool Sacar(double valorOperacao)
+        public override void Sacar(double valorOperacao)
         {
             // Permite invocar o método sacar da classe base/pai mas com um comportamento levemente modificado
             base.Sacar(valorOperacao + taxtaSaquePoupanca);
-
-            // A variavél "resultado" está na classe pai
-            return resultado;
         }
     }
 }

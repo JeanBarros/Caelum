@@ -11,8 +11,11 @@ namespace Banco
 {
     public partial class Form1 : Form
     {
-        private Conta contaCorrente;
-        private ContaPoupanca contaPoupanca;
+        // Array de contas
+        private Conta[] contas;
+
+        // Armazena o índice da conta selecionada no ComboBox de contas
+        int contaSelecionada = 0;
 
         public Form1()
         {
@@ -21,71 +24,102 @@ namespace Banco
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            // Instancia uma nova Conta Corrente
-            this.contaCorrente = new Conta();
-            contaCorrente.Numero = 1;
+            // criando o array para guardar as contas
+            contas = new Conta[3];
 
-            Cliente cliente = new Cliente("Jão");
-            contaCorrente.Titular = cliente;
+            // Nova instância de Conta.
+            this.contas[0] = new Conta();
+            this.contas[0].Titular = new Cliente("Jão");
+            this.contas[0].Numero = 1;
+            
+            // Nova instância de Conta Poupança
+            this.contas[1] = new ContaPoupanca();
+            this.contas[1].Titular = new Cliente("Zé");
+            this.contas[1].Numero = 2;
+            
+            // Nova instância de Conta Corrente
+            this.contas[2] = new ContaCorrente();
+            this.contas[2].Titular = new Cliente("Ana");
+            this.contas[2].Numero = 3;
 
-            txtTitular.Text = contaCorrente.Titular.Nome;
-            txtNumero.Text = Convert.ToString(contaCorrente.Numero);
-            txtSaldo.Text = Convert.ToString(contaCorrente.Saldo);
-
-            // Instancia uma nova Conta Poupança
-            this.contaPoupanca = new ContaPoupanca();
-            contaPoupanca.Numero = 1;
-
-            Cliente clientePop = new Cliente("Maria");
-            contaPoupanca.Titular = clientePop;
-
-            txtTitular.Text = contaPoupanca.Titular.Nome;
-            txtNumero.Text = Convert.ToString(contaPoupanca.Numero);
-            txtSaldo.Text = Convert.ToString(contaPoupanca.Saldo);
+            // Popula ComboBox com nome dos titulares de cada conta
+            foreach (Conta conta in contas)
+            {
+                cbxContas.Items.Add(conta.Titular.Nome);
+            }
         }
 
         private void btnDepositar_Click(object sender, EventArgs e)
         {
-            if (rdbCorrente.Checked == true)
+            if (string.IsNullOrEmpty(txtValor.Text))
+                MessageBox.Show("Informe um valor");
+            else
             {
-                contaCorrente.Depositar(Convert.ToDouble(txtValor.Text));  // converte para string             
-                txtSaldo.Text = contaCorrente.Saldo.ToString(); // outra forma de converter para string
-                MessageBox.Show("Operação realizada com sucesso");
-            }
+                if (rdbCorrente.Checked == true)
+                {
+                    contas[contaSelecionada].Depositar(Convert.ToDouble(txtValor.Text));  // converte para string             
+                    txtSaldo.Text = contas[contaSelecionada].Saldo.ToString(); // outra forma de converter para string
+                    MessageBox.Show("Operação realizada com sucesso");
+                    txtValor.Clear();
+                }
 
-            if (rdbPoupanca.Checked == true)
-            {
-                // chama o método escrito na classe pai "Conta"
-                contaPoupanca.Depositar(Convert.ToDouble(txtValor.Text));  // converte para string             
-                txtSaldo.Text = contaPoupanca.Saldo.ToString(); // outra forma de converter para string
-                MessageBox.Show("Operação realizada com sucesso");
-            }
+                if (rdbPoupanca.Checked == true)
+                {
+                    // chama o método escrito na classe pai "Conta"
+                    contas[contaSelecionada].Depositar(Convert.ToDouble(txtValor.Text));  // converte para string             
+                    txtSaldo.Text = contas[contaSelecionada].Saldo.ToString(); // outra forma de converter para string
+                    MessageBox.Show("Operação realizada com sucesso");
+                    txtValor.Clear();
+                }
 
-            if (rdbPoupanca.Checked == false && rdbCorrente.Checked == false)
-                MessageBox.Show("Selecione o tipo da conta");
+                if (rdbPoupanca.Checked == false && rdbCorrente.Checked == false)
+                    MessageBox.Show("Selecione o tipo da conta");
+            }
         }
 
         private void btnSacar_Click(object sender, EventArgs e)
         {
-            if (rdbPoupanca.Checked == true)
+            if (string.IsNullOrEmpty(txtValor.Text))
+                MessageBox.Show("Informe um valor");
+            else
             {
-                // chama o método "Sacar" escrito na classe filha "ContaPoupanca"
-                contaPoupanca.Sacar(Convert.ToDouble(txtValor.Text));
+                if (rdbPoupanca.Checked == true)
+                {
+                    // chama o método "Sacar" escrito na classe filha "conta"
+                    contas[contaSelecionada].Sacar(Convert.ToDouble(txtValor.Text));
 
-                if (contaPoupanca.resultado)
-                txtSaldo.Text = contaPoupanca.Saldo.ToString();
-            }
+                    if (contas[contaSelecionada].resultado)
+                    {
+                        txtSaldo.Text = contas[contaSelecionada].Saldo.ToString();
+                        txtValor.Clear();
+                    }
+                }
 
-            if (rdbCorrente.Checked == true)
-            {
-                contaCorrente.Sacar(Convert.ToDouble(txtValor.Text));
-                
-                if(contaCorrente.resultado)
-                txtSaldo.Text = contaCorrente.Saldo.ToString();
+                if (rdbCorrente.Checked == true)
+                {
+                    contas[contaSelecionada].Sacar(Convert.ToDouble(txtValor.Text));
+
+                    if (contas[contaSelecionada].resultado)
+                    {
+                        txtSaldo.Text = contas[contaSelecionada].Saldo.ToString();
+                        txtValor.Clear();
+                    }
+                }
+
+                if (rdbPoupanca.Checked == false && rdbCorrente.Checked == false)
+                    MessageBox.Show("Selecione o tipo da conta");
             }
-            
-            if (rdbPoupanca.Checked == false && rdbCorrente.Checked == false)
-                MessageBox.Show("Selecione o tipo da conta");
+        }        
+
+        private void cbxContas_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            int indice = cbxContas.SelectedIndex;
+            Conta selecionada = contas[indice];
+            txtTitular.Text = selecionada.Titular.Nome;
+            txtSaldo.Text = Convert.ToString(selecionada.Saldo);
+            txtNumero.Text = Convert.ToString(selecionada.Numero);
+
+            contaSelecionada = indice;
         }
     }
 }

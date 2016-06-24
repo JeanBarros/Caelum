@@ -13,7 +13,7 @@ namespace Banco
 
         public Cliente Titular { get; set; }
 
-        public void Depositar(double valorOperacao)
+        public virtual void Depositar(double valorOperacao)
         {
             this.Saldo += valorOperacao;    
         }
@@ -21,7 +21,7 @@ namespace Banco
         // Esta variável é utilizada como valor de retorno em métodos de classes filhas.
         public bool resultado = false;
 
-        public virtual bool Sacar(double valorOperacao)
+        public virtual void Sacar(double valorOperacao)
         {
             if (this.Saldo > 0 && this.Saldo >= valorOperacao)
             {
@@ -32,8 +32,6 @@ namespace Banco
             }
             else
                 MessageBox.Show("Saldo insuficiente");
-
-            return resultado;
         }
     }
 }
