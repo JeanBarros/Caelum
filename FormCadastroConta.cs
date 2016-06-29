@@ -24,6 +24,7 @@ namespace Banco
             Conta novaConta = new ContaCorrente();
             novaConta.Titular = new Cliente(txtTitular.Text);
             novaConta.Numero = Convert.ToInt32(txtNumero.Text);
+            this.formPrincipal.AdicionarConta(novaConta);            
         }
     }
 }

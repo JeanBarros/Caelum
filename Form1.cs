@@ -14,6 +14,9 @@ namespace Banco
         // Array de contas
         private Conta[] contas;
 
+        // Armazena o número de contas que já foram cadastradas
+        private int numeroDeContas;
+
         // Armazena o índice da conta selecionada no ComboBox de contas
         int contaSelecionada = 0;
 
@@ -49,6 +52,11 @@ namespace Banco
             }
         }
 
+        /// <summary>
+        /// método utilizado para depositar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnDepositar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtValor.Text))
@@ -77,6 +85,11 @@ namespace Banco
             }
         }
 
+        /// <summary>
+        /// Método utilizado para sacar
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void btnSacar_Click(object sender, EventArgs e)
         {
             if (string.IsNullOrEmpty(txtValor.Text))
@@ -120,6 +133,26 @@ namespace Banco
             txtNumero.Text = Convert.ToString(selecionada.Numero);
 
             contaSelecionada = indice;
+        }
+
+        /// <summary>
+        /// Método utilizado para criar uma conta nova
+        /// </summary>
+        /// <param name="conta"></param>
+        public void AdicionarConta(Conta conta)
+        {
+            this.contas[this.numeroDeContas] = conta;
+            this.numeroDeContas++;
+            cbxContas.Items.Add(conta.Titular.Nome);
+        }
+
+        private void btnNovaConta_Click(object sender, EventArgs e)
+        {
+            // this representa a instância de Form1 que está sendo utilizada pelo Windows Form
+            FormCadastroConta formularioDeCadastro = new FormCadastroConta(this);
+
+            // Para mostrar o formulário, utilizar o método ShowDialog do FormCadastroConta
+            formularioDeCadastro.ShowDialog();
         }
     }
 }
